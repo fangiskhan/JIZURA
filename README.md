@@ -1,221 +1,227 @@
-# JIZURA 字面 — 文字PV自動構成ツール
+# JIZURA — Auto Lyric Video Builder (English edition)
 
-歌詞を入れると、文字PV（リリックモーション）でよく使われる表現を組み合わせてカットを自動で組み立て、MP4 に書き出すブラウザアプリです。レイアウト・動き・装飾・つなぎ・仕上げを 707 の小さな部品（と 24 のスタイル）として持ち、その組み合わせを毎回変えるので、シードを変えれば何度でも別の構成になります。After Effects 用のパネル（ScriptUI）も付属しています。
+> English translation of [852wa/JIZURA](https://github.com/852wa/JIZURA) by hakoniwa (MIT). The UI, part names and docs are translated; the engine still handles Japanese lyrics as well as English.
+>
+> The After Effects panel (`JIZURA_AE.jsx`) is **not** translated in this edition: its labels are still in Japanese.
 
-**▶ ブラウザで使う：<https://852wa.github.io/JIZURA/>**　／　AE パネル：[JIZURA_AE.jsx をダウンロード](https://852wa.github.io/JIZURA/JIZURA_AE.jsx)（リンク先を右クリック →「名前を付けてリンク先を保存」）
+A browser app that takes your lyrics, automatically builds cuts by combining techniques common in lyric videos (kinetic typography), and exports them to MP4. Layout, motion, decor, transitions and finish are stored as 707 small parts (plus 24 styles), and the combination changes every time, so a new seed always gives you a different structure. A panel (ScriptUI) for After Effects is included too.
 
-- インストール不要。歌詞・曲・書き出しはすべてブラウザの中で処理され、サーバーには送信されません（外部から読み込むのは Google Fonts のフォントだけで、今の構成で使う書体だけを読み込みます）。
-- おまかせボタン（キー `R`）で、押すたびにスタイル・雰囲気・動き・配色・構成がまるごと変わります。
-- 画面比 16:9 / 9:16 / 4:3 / 3:4 / 1:1 / 4:5 / 21:9、720p〜4K、24 / 30 / 60fps。
-- 曲を読み込むと拍を検出してカットを合わせます。タップでの手動同期もできます。
-- MP4（曲入り）・連番PNG・透過PNG で書き出し。After Effects で編集できる構成データ（JSON）も書き出せます。
+**▶ Original (Japanese) version: <https://852wa.github.io/JIZURA/>** / AE panel: [download JIZURA_AE.jsx](https://852wa.github.io/JIZURA/JIZURA_AE.jsx) (right-click the link → "Save link as…")
 
-| ファイル | 中身 |
+- Nothing to install. Lyrics, songs and exports are all processed inside your browser and never sent to a server (the only thing loaded from outside is fonts from Google Fonts, and only the typefaces the current structure uses).
+- The Auto button (key `R`) changes the style, mood, motion, colors and structure all at once, every time you press it.
+- Aspect ratios 16:9 / 9:16 / 4:3 / 3:4 / 1:1 / 4:5 / 21:9, 720p to 4K, 24 / 30 / 60 fps.
+- Load a song and it detects the beats and fits the cuts to them. You can also sync by hand by tapping.
+- Export as MP4 (with the song), PNG sequence or transparent PNG. You can also export the structure as data (JSON) that you can edit in After Effects.
+
+| File | Contents |
 |---|---|
-| `index.html` | ブラウザ版の本体（ビルド済み・1ファイル）。GitHub Pages ではこれが開きます。ダウンロードしてローカルで開いても使えます |
-| `JIZURA_AE.jsx` | After Effects 用のパネル（ビルド済み） |
-| `src/` `app/` | ブラウザ版のソース（エンジン・表現パック・UI） |
-| `ae/` | AE パネルのソース |
-| `docs/EXPRESSION_PACKS.md` | 表現部品（パック）を追加する人向けのガイド |
+| `index.html` | The browser app itself (built, single file). This is what opens on GitHub Pages. You can also download it and open it locally |
+| `JIZURA_AE.jsx` | The After Effects panel (built) |
+| `src/` `app/` | Source of the browser app (engine, expression packs, UI) |
+| `ae/` | Source of the AE panel |
+| `docs/EXPRESSION_PACKS.md` | Guide for people adding expression parts (packs) |
 
-### 動作環境
+### Requirements
 
-- **MP4 書き出し**：WebCodecs に対応したブラウザ（Chrome / Edge 推奨。Safari 16.4 以降・Firefox 130 以降も WebCodecs に対応していますが、H.264 で書き出せるかはブラウザと OS によります）。対応していない環境でも、プレビューと連番PNG書き出しは使えます。
-- フォントは Google Fonts から、使う書体だけを必要なときに読み込みます（オフラインのときは PC のフォントで代用）。
-
----
-
-## 利用について（出力物の権利とライセンス）
-
-- このツールで作った**動画や画像（出力物）の権利は、作った人に帰属します**。商用・非商用を問わず自由に使えます。
-- 使った歌詞や曲の権利は、それぞれの権利者に帰属します。
-- ツール本体は MIT ライセンスで公開しています。詳しくは [LICENSE](LICENSE) を見てください。
-- 入力した歌詞や曲は、ブラウザの中だけで処理され、サーバーには送信されません。
-- アプリ画面でも、右上の「利用について」ボタン（かんたんモードでは書き出しボタンの下のリンク）から同じ内容を確認できます。
+- **MP4 export**: a browser that supports WebCodecs (Chrome / Edge recommended. Safari 16.4+ and Firefox 130+ also support WebCodecs, but whether they can export H.264 depends on the browser and OS). Without WebCodecs you can still use the preview and the PNG sequence export.
+- Fonts are loaded from Google Fonts, only the typefaces in use and only when needed (offline, your computer's fonts are used instead).
 
 ---
 
-## おまかせ（かんたんモード）
+## Terms of use (rights to your output and license)
 
-右上の「かんたん / 詳細」で画面を切り替えられます。最初はかんたんモードで開きます。
-
-- **おまかせで作る**（キーボードの `R` でも可）：押すたびに次をまとめてランダムに決め直し、頭から再生します。
-  - スタイル（直前と同じものは出ません）
-  - 雰囲気（グリッチ / しっとり / ポップ / グラフィック / エディトリアル / エモーショナル / 全部入り）。雰囲気ごとに、動きの強さ・グリッチの量・使うレイアウトや登場・退場の手法が変わります。
-  - 見出しや明朝枠の書体
-  - 配色（ときどき、アクセント色とズレ色A/Bもランダムになります）
-  - カット構成（シード）
-- **◀ 前の案 / 次の案 ▶**：おまかせで出した案を行き来できます。気に入った案に戻ってから書き出せます。
-- **ここだけ変える**：今の案を活かしたまま、一部だけを振り直します。
-  - スタイル / 配色（アクセント・ズレ色A/B）/ 雰囲気（動きと使う手法）/ 構成（レイアウトと動きの組み合わせ）
-- 歌詞・曲・タイミング・書き出し設定は、おまかせでは変わりません。行リストで鍵をかけた行もそのまま残ります。
-
-### ランダムで使う演出の範囲
-
-おまかせボタンの下（詳細モードでは「手法」タブの上）にある2つのチェックで、おまかせ・シャッフル・行ごとの再抽選で選ばれる演出を決められます。
-
-- **追加分の演出も使う**（初期状態：オフ）：オフのときは、最初の公開版の演出（356部品・スタイル12種）だけを使います。オンにすると、あとから追加した演出（351部品・スタイル12種・書体6種）も候補になります。
-- **和風の演出も使う**（初期状態：オン）：提灯・はがき・障子・扇・家紋・青海波・桜の花びらなどの和風グラフィックと、和風のスタイル（サクラ・墨と朱）です。オフにすると選ばれなくなります。この判定は、追加分のチェックのあとに適用されます。
-- どちらも、行ごとに手動でレイアウトなどを指定した場合や、スタイルを自分で選んだ場合には関係なく使えます。
-- 「手法」タブとスタイル一覧では、追加分に「追加」、和風に「和」の印が付きます。いまの設定でランダムに選ばれないものは薄く表示されます。
-
-## 配色ランダム
-
-「詳細」→「スタイル」タブの「アクセント・ズレ色」にあります。
-
-- **ランダムに配色**：アクセント色と、ズレ色A/B（色ズレの2色）を組み合わせで選び直します。
-  - 半分弱は、補色どうしなどで相性を調整済みの組み合わせから選びます。残りは色相環から毎回新しく作ります。
-  - 背景の明るさに合わせて明るさを自動で補正し、文字が読める濃さを保ちます（アクセントは背景とのコントラスト比 3 以上）。
-- 色を直接選ぶこともできます。「自分の色で上書き」を外すと、スタイル本来の色に戻ります。
+- **The rights to the videos and images you make with this tool (the output) belong to you, the person who made them.** You can use them freely, commercially or not.
+- The rights to the lyrics and songs you use belong to their respective owners.
+- The tool itself is released under the MIT License. See [LICENSE](LICENSE) for details.
+- The lyrics and songs you enter are processed only inside your browser and are never sent to a server.
+- In the app, you can read the same information from the "Terms of use" button at the top right (in Simple mode, from the link under the Export button).
 
 ---
 
-## ブラウザ版の使い方
+## Auto (Simple mode)
 
-1. **歌詞**：1行が1フレーズです。記法は次のとおりです。
-   - `夜明けの色を/覚えてる` … `/` でカットの切れ目を指定
-   - `*透明*` … 強調（大きく・インパクトのある演出が選ばれやすくなります）
-   - 行末の `!` … フラッシュと揺れが入ります
-   - `歌詞|注釈` … 注釈レイアウトに出す小さな文字
-   - `[01:23.45]歌詞` … LRC のタイムスタンプをそのまま使います
-2. **曲とタイミング**
-   - 曲を読み込むと、BPM と拍を自動で検出し、カットの切れ目を拍に寄せます。
-   - 「タップで同期」を押すと曲が流れます。各行が始まる瞬間に Space を押してください。
-   - 行リストの秒数を直接書き換えることもできます。
-3. **構成を選ぶ**
-   - 「シャッフル」で全体を再抽選します。
-   - 行ごとのサイコロで、その行だけを再抽選します。
-   - 鍵でその行の構成を固定し、レイアウトを直接指定することもできます。
-4. **スタイル**：配色・書体・質感のセットが24種類あります（サクラ / 深海 / 夕焼けグラデ / 森の手帖 / ヴェイパー / 新聞 / シンセ80s / クラフト紙 / キャンディ / アシッド / 墨と朱 / 金夜 などを含む）。1本の中でも、カットによって背景色が切り替わります。
-   - 書体は Google Fonts の18ファミリー（Reggae One / Rampart One / Potta One / Kiwi Maru / Klee One / Shippori Mincho B1 を含む）から選ばれます。**今の構成で使っている書体だけ**をその都度読み込むので、書体の数が増えても起動や動作は重くなりません。
-   - フォントは次の方法で差し替えられます。
-     - PC に入っているフォント名を入力する
-     - .ttf / .otf ファイルを読み込む
-5. **演出と手法**
-   - 「演出」タブで、動きの強さ・グリッチ・色ズレ・装飾の量・カットの細かさ・質感・コマ打ちを調整します。
-   - 「手法」タブで、10の分類（レイアウト・登場・保持・退場・装飾・文字の加工・背景・カメラ・画面効果・カット間のつなぎ）の部品を1つずつ ON/OFF できます（上の「追加分」「和風」のチェックと組み合わせて判定されます）。分類ごとに折りたたまれていて、「すべてON / すべてOFF / 反転」と名前での絞り込みが使えます。
-6. **書き出し**
-   - MP4（Chrome / Edge では H.264。曲も含められます）
-   - 連番PNG（ZIP）
-   - 透過PNG（ZIP・背景なし。AE などで合成する用）
-   - 画面比は 16:9 / 9:16 / 4:3 / 3:4 / 1:1 / 4:5 / 21:9、解像度は 720p〜4K、フレームレートは 24 / 30 / 60fps から選べます（詳しくは下の「24 / 30 / 60fps での書き出し」）。
-7. **AE用に書き出し**：今の構成（タイミング・レイアウト・演出・配色）を JSON に書き出します。AE パネルで読み込むと、同じ構成のまま編集できるコンポになります。
+Switch screens with "Simple / Advanced" at the top right. The app opens in Simple mode.
 
-### 24 / 30 / 60fps での書き出し
+- **Auto-create** (or `R` on the keyboard): each press re-rolls all of the following at random and plays from the start.
+  - Style (never the same as the previous one)
+  - Mood (Glitch / Mellow / Pop / Graphic / Editorial / Emotional / Everything). Each mood changes the motion strength, the amount of glitch, and which layouts and enter / exit techniques are used.
+  - Typeface for headlines and Mincho frames
+  - Colors (sometimes the accent color and offset colors A/B are randomized too)
+  - Cut structure (seed)
+- **◀ Previous take / Next take ▶**: move back and forth between the takes Auto has made. Go back to a take you like, then export it.
+- **Change just one thing**: keep the current take and re-roll only one part of it.
+  - Style / Colors (accent, offset colors A/B) / Mood (motion and techniques used) / Structure (combination of layouts and motion)
+- Auto never changes the lyrics, song, timing or export settings. Lines you have locked in the line list stay as they are.
 
-1. 「書き出し」タブ（かんたんモードでは右の「書き出し」欄）で、画面比・解像度・**fps** を選びます。
-2. 「MP4 を書き出す」を押します。選んだ fps のフレーム数でそのまま書き出されます（例：6秒なら 24fps で 144枚、60fps で 360枚）。
-3. 動きのカクつき具合は fps とは別に「演出」タブの **コマ打ち** で決まります。
-   - **2コマ打ち（12枚/秒）**：文字PVらしい、少しカクッとした動き。どの fps で書き出しても同じ見た目になります（既定）。
-   - **3コマ打ち（8枚/秒）**：さらに作画っぽい、止め気味の動き。
-   - **フル**：出力 fps のまま毎フレーム動きます。60fps + フルが最もなめらか（カメラの動きや流れる帯がきれい）。
-4. グリッチや点滅のランダムな切り替わりは、fps を変えても 24fps 基準で同じ速さになるようにしてあります。60fps で書き出してもチラつきが倍速にはなりません。
-5. 目安：YouTube / MV なら 24fps（または 30fps）、SNS の縦動画でなめらかにしたいときは 30〜60fps + フル。60fps・4K は書き出しに時間がかかります。
+### What random picks can use
 
-AE パネルでは、パネルの「fps」（24 / 30 / 60）でコンポのフレームレートを選べます。JSON から作る場合は、ブラウザ版で選んだ fps のコンポになります。
+Two checkboxes under the Auto button (in Advanced mode, above the "Techniques" tab) decide which effects Auto, Shuffle and per-line re-rolls can pick.
 
-### 表現の部品（組み合わせて自動構成）
+- **Use Extras too** (default: off): when off, only the effects from the first public release (356 parts, 12 styles) are used. When on, the effects added later (351 parts, 12 styles, 6 typefaces) become candidates too.
+- **Use Japanese-style effects** (default: on): Japanese-style graphics such as paper lanterns, postcards, shoji screens, folding fans, family crests, seigaiha waves and cherry-blossom petals, and the Japanese-style styles (Sakura, Ink & Vermilion). When off, they are never picked. This check is applied after the Extras check.
+- Neither applies when you set a layout etc. by hand for a line, or choose a style yourself: those can always be used.
+- In the "Techniques" tab and the style list, Extras carry a "+" badge and Japanese-style entries a "和" badge. Entries that random picks cannot choose with the current settings are shown faded.
 
-部品の総数は **707**（最初の公開版の356 ＋ 追加分351。追加分は「追加分の演出も使う」がオンのときにランダムの候補になります）。1カットごとに、各分類から1つずつ（装飾は0〜3個）が組み合わされます。
+## Random colors
 
-| 分類 | 数 | 例 |
+Found under "Advanced" → "Style" tab → "Accent & offset colors".
+
+- **Random palette**: picks a new combination of accent color and offset colors A/B (the two colors of the color offset).
+  - A little under half the time it picks from combinations already tuned to work together (complementary colors and so on). Otherwise it builds a fresh one from the color wheel.
+  - Brightness is corrected automatically to suit the background, keeping text dark or light enough to read (the accent keeps a contrast ratio of at least 3 against the background).
+- You can also pick colors directly. Uncheck "Override with my colors" to go back to the style's own colors.
+
+---
+
+## Using the browser app
+
+1. **Lyrics**: one line is one phrase. The syntax is:
+   - `Hold the light/until morning` … `/` marks a cut break
+   - `*glass*` … emphasis (bigger, high-impact effects are more likely to be picked)
+   - `!` at the end of a line … adds a flash and a shake
+   - `word|note` … small text shown in annotation layouts
+   - `[01:23.45]lyric` … uses the LRC timestamp as is
+2. **Song and timing**
+   - Load a song and BPM and beats are detected automatically; cut breaks snap to the beats.
+   - Press "Tap to sync" and the song plays. Press Space at the moment each line starts.
+   - You can also edit the times in the line list directly.
+3. **Choosing the structure**
+   - "Shuffle" re-rolls everything.
+   - The dice on each line re-rolls just that line.
+   - The lock fixes that line's structure, and you can also set its layout directly.
+4. **Style**: there are 24 sets of colors, typefaces and textures (including Sakura / Deep Sea / Sunset Gradient / Forest Notes / Vapor / Newsprint / Synth 80s / Kraft Paper / Candy / Acid / Ink & Vermilion / Golden Night). Within one video, the background color changes from cut to cut.
+   - Typefaces are chosen from 18 Google Fonts families (including Reggae One / Rampart One / Potta One / Kiwi Maru / Klee One / Shippori Mincho B1). **Only the typefaces the current structure uses** are loaded, as needed, so more typefaces do not make startup or playback slower.
+   - You can replace fonts by:
+     - typing the name of a font installed on your computer
+     - loading a .ttf / .otf file
+5. **Effects and Techniques**
+   - In the "Effects" tab, adjust motion strength, glitch, color offset, amount of decor, cut density, texture and frame stepping.
+   - In the "Techniques" tab, you can turn each part in the 10 categories (Layout, Enter, Hold, Exit, Decor, Text treatment, Background, Camera, Screen effects, Transitions between cuts) on or off one by one (combined with the "Extras" and "Japanese-style" checkboxes above). Each category is collapsed, with "All on / All off / Invert" buttons and filtering by name.
+6. **Export**
+   - MP4 (H.264 in Chrome / Edge; the song can be included)
+   - PNG sequence (ZIP)
+   - Transparent PNG (ZIP, no background; for compositing in AE and similar)
+   - Aspect ratio 16:9 / 9:16 / 4:3 / 3:4 / 1:1 / 4:5 / 21:9, resolution 720p to 4K, frame rate 24 / 30 / 60 fps (see "Exporting at 24 / 30 / 60 fps" below).
+7. **Export for AE**: exports the current structure (timing, layouts, effects, colors) as JSON. Load it into the AE panel and you get comps with the same structure, ready to edit.
+
+### Exporting at 24 / 30 / 60 fps
+
+1. In the "Export" tab (in Simple mode, the "Export" box on the right), choose the aspect ratio, resolution and **fps**.
+2. Press "Export MP4". It is exported with the frame count of the chosen fps (e.g. 6 seconds = 144 frames at 24 fps, 360 frames at 60 fps).
+3. How choppy the motion looks is set separately from fps, by the **Animate on** setting in the "Effects" tab.
+   - **Twos (12 drawings/s)**: the slightly jerky motion typical of lyric videos. Looks the same at any export fps (default).
+   - **Threes (8 drawings/s)**: even more hand-animated, with more held poses.
+   - **Ones**: moves on every frame at the output fps. 60 fps + Ones is the smoothest (camera moves and scrolling bands look clean).
+4. Random switching in glitches and flicker runs at the same speed as at 24 fps whatever fps you choose. Exporting at 60 fps does not make the flicker twice as fast.
+5. Rule of thumb: 24 fps (or 30 fps) for YouTube / music videos; 30 to 60 fps + Ones for smoother vertical social videos. 60 fps and 4K take a while to export.
+
+In the AE panel, choose the comp frame rate with the panel's "fps" setting (24 / 30 / 60). When building from JSON, the comp uses the fps chosen in the browser app.
+
+### Expression parts (combined automatically)
+
+There are **707** parts in total (356 from the first public release + 351 Extras. Extras become random candidates when "Include Extras" is on). Each cut combines one part from each category (0 to 3 for decor).
+
+| Category | Count | Examples |
 |---|---|---|
-| レイアウト | 140 | 中央、縦書き、画面突き抜け、下部テロップ、吹き出し、原稿用紙、文字の雨、トンネル、ネオン、エンドロール、雑誌の見開き、目次、新聞、レコード、カセット、ポラロイド、切手シート、絵馬、提灯、暖簾、短冊、おみくじ、掛け軸、障子、駅名標、立方体、円筒、はためく旗、振り子、積み木、文字風船、電光掲示板、看板、クロスワード、パズル、影絵、万華鏡、ジッパー、ステンシル… |
-| 登場 | 100 | 分解→集合、スライス、フリップ、ドミノ、アイリス、ブラインド、螺旋集合、ネオン点灯、スタンプ、バネ、パチンコ、バウンドボール、扇開き、円筒回転、コマ撮り、シール貼り、くしゃ戻り、手紙開き、パタパタ、ルーペ、フィルム送り、CRT電源、ローディング、ドラム回転、データ降下、筆払い、インク滴、カウントイン、一画ずつ… |
-| 保持 | 38 | ジッター、ふわふわ、ゆらぎ、拍で脈動、鼓動、ゼリー、灯火のゆらぎ、突風、ぶら下がり、音圧で伸びる、拍で反転、光沢、時々裏返る、ピント送り、弦の振動… |
-| 退場 | 86 | 爆散、崩落、扉が閉まる、TVオフ、吸い込み、溶ける、バックスペース、ステッカー剥がし、丸めて捨てる、破り捨て、焦げて消える、黒板消し、砂になって飛ぶ、シュレッダー、風船で飛ぶ、ガラス割れ、竜巻、ひらひら落ちる、衝撃波、水没、一刀両断、吹き消す… |
-| 装飾 | 115 | 照準線、トンボ、レーダー、寸法線、紙吹雪、花びら、光漏れ、ボケ玉、筆の払い、落款、家紋、青海波、花火、提灯、注連縄、扇、紅葉、霞、回路、見当合わせ、ホチキス、クリップ、星空、月齢、蛍、メンフィス、再生ボタン、いいね、音符… |
-| 文字の加工 | 52 | 袋文字、縁取り、立体、長い影、発光、マーカー、網点、傍点、ネオン管、クローム、虹色、色版ズレ、多重影、ステンシル字、カラオケ、丸囲み、かぎ括弧、映り込み、シール縁、原稿用紙風、切り貼り文字… |
-| 背景 | 62 | 放射、同心円、スポットライト、巨大文字、レトロ格子、水玉、オーロラ、メッシュグラデ、青海波、麻の葉、千鳥格子、タータン、等高線、星空、月夜、街並み、夕日、海の波、雨の窓、花火、山並み、VHSノイズ、大理石、切り絵… |
-| カメラ | 28 | ゆっくり寄る、パン、ダッチ、手持ち、拍でズーム、クラッシュズーム、周回、バレルロール、振り子、ピント合わせ、地震、めまい、渦ズーム、スナップパン… |
-| 画面効果 | 66 | スライス/ブロックグリッチ、反転、フラッシュ、RGB分離、VHSロール、ストロボ、フィルム焼け、放射色収差、ブルーム、魚眼、ピクセルソート、1bitディザ、万華鏡、アナモフレア、砂嵐、フィルム傷、集中線、キラッ、カラーバー、ガラス割れ、シャッター… |
-| カット間のつなぎ | 20 | エッジワイプ、斜め帯ワイプ、クロックワイプ、アイリスイン、プッシュ、カバー、ズームスルー、観音開き、ブラインド転換、市松転換、ブロック崩し、ホイップパン、インク、タイル崩落、キューブ、フラッシュ転換、モザイク転換… |
+| Layout | 140 | center, vertical, bleed off screen, lower-third caption, speech bubble, manuscript paper, letter rain, tunnel, neon, end credits, magazine spread, table of contents, newspaper, vinyl record, cassette, Polaroid, stamp sheet, ema votive plaque, paper lantern, noren curtain, tanzaku strip, omikuji fortune, hanging scroll, shoji screen, station sign, cube, cylinder, waving flag, pendulum, building blocks, letter balloons, LED board, signboard, crossword, puzzle, shadow play, kaleidoscope, zipper, stencil… |
+| Enter | 100 | assemble, slice, flip, dominoes, iris, blinds, spiral gather, neon light-up, stamp, spring, slingshot, bouncing ball, fan open, cylinder roll, stop motion, sticker on, uncrumple, letter unfold, split-flap, magnifier, film advance, CRT power-on, loading, drum roll, data rain, brush sweep, ink drop, count-in, stroke by stroke… |
+| Hold | 38 | jitter, float, sway, beat pulse, heartbeat, jelly, candle flicker, gust, dangle, stretch with loudness, beat invert, sheen, occasional flip, focus pull, string vibration… |
+| Exit | 86 | explode, collapse, doors close, TV off, suck in, melt, backspace, sticker peel, crumple and toss, tear away, burn away, blackboard eraser, blow away as sand, shredder, float off on balloons, glass shatter, tornado, flutter down, shockwave, sink underwater, sword slash, blow out… |
+| Decor | 115 | crosshairs, crop marks, radar, dimension lines, confetti, petals, light leak, bokeh, brush sweep, seal stamp, family crest, seigaiha waves, fireworks, lanterns, shimenawa rope, folding fan, autumn leaves, mist bands, circuit, registration marks, staples, paper clip, starry sky, moon phases, fireflies, Memphis, play button, like, music notes… |
+| Text treatment | 52 | bold outline, edging, 3D, long shadow, glow, highlighter, halftone, emphasis dots, neon tube, chrome, rainbow, misregistration, multi-shadow, stencil letters, karaoke, circled, corner brackets, reflection, sticker edge, manuscript-paper style, ransom-note cut-outs… |
+| Background | 62 | radial burst, concentric circles, spotlight, giant letters, retro grid, polka dots, aurora, mesh gradient, seigaiha, asanoha, houndstooth, tartan, contour lines, starry sky, moonlit night, cityscape, sunset, ocean waves, rainy window, fireworks, mountain range, VHS noise, marble, paper cutout… |
+| Camera | 28 | slow push-in, pan, Dutch angle, handheld, beat zoom, crash zoom, orbit, barrel roll, pendulum, focus in, earthquake, vertigo, swirl zoom, snap pan… |
+| Screen effects | 66 | slice / block glitch, invert, flash, RGB split, VHS roll, strobe, film burn, radial chromatic aberration, bloom, fisheye, pixel sort, 1-bit dither, kaleidoscope, anamorphic flare, TV static, film scratches, speed lines, sparkle, color bars, shattered glass, shutter… |
+| Transitions between cuts | 20 | edge wipe, diagonal band wipe, clock wipe, iris in, push, cover, zoom through, double doors, blinds, checkerboard, breakout, whip pan, ink, tile collapse, cube, flash, mosaic… |
 
-- 文字の加工は「装飾の量」が多いほど使われやすく、背景は行ごとに選ばれます（「背景の切替」で頻度が上がります）。
-- カット間のつなぎは、前のカットと続けて切り替わる所に、動きの強さに応じてときどき入ります（前のカットの最後の画と次のカットを合成して切り替えます）。
-- 部品ごとに雰囲気のタグ（グリッチ / しっとり / ポップ / グラフィック / エディトリアル / エモーショナル）が付いていて、おまかせはその雰囲気に合う部品を中心に使います。
+- Text treatments are used more often the higher "Decor amount" is. Backgrounds are chosen per line ("Background switching" makes them change more often).
+- Transitions between cuts are inserted now and then, depending on motion strength, where one cut runs straight into the next (the last frame of the previous cut is composited with the next cut for the switch).
+- Every part carries mood tags (Glitch / Mellow / Pop / Graphic / Editorial / Emotional), and Auto mostly uses parts that suit the chosen mood.
 
-以下は基本セット（AE パネルにも入っている部品）の一覧です。
+Below is the list of the base set (the parts that are also in the AE panel).
 
-- **レイアウト（17種）**：中央 / 大小ミックス / 縦書き / 流れる帯 / 敷き詰め / 散らし / 円環 / 波の軌跡 / 画面突き抜け / ラベル貼り / 縦長圧縮 / 注釈 / タイプ / 斜め帯 / 円窓 / 残像スタック / カプセル
-- **登場（13種）**：分解→集合（字形を画や部品の単位に分解）/ スライス / タイプ / ポップ / 落下 / 伸縮 / ワイプ / ブラー / 回転 / 点滅 / スクランブル / ズーム / カット
-- **保持**：ジッター / ドリフト / 呼吸 / ウェーブ / グリッチ
-- **退場（11種）**：爆散 / 崩落 / 霧散 / スライス / ワイプ / 収縮 / ブラー / 伸縮 / 飛散 / グリッチ / カット
-- **装飾（15種）**：枠マーク / 座標の円 / ドットの輪 / 矢印 / スラッシュ / スパーク / 引き出し線 / 波形 / バーコード / グリッド / ストライプ / インクの染み / 荒い帯 / 図形 / 大きな数字
-- **仕上げ**
-  - 時間差つきの色ズレ（RGB分離）
-  - 画面全体のスライスグリッチ / ブロックグリッチ
-  - 反転 / フラッシュ / ズームブラー / モザイク
-  - 揺れ / 2コマ打ち / 粒子 / 紙の質感 / 走査線 / 光のにじみ / 周辺減光
-
----
-
-## After Effects パネルの使い方
-
-### 入れ方
-
-1. `JIZURA_AE.jsx` を次のフォルダに置き、AE を再起動します。
-   - Windows：`C:\Program Files\Adobe\Adobe After Effects <版>\Support Files\Scripts\ScriptUI Panels\`
-   - Mac：`/Applications/Adobe After Effects <版>/Scripts/ScriptUI Panels/`
-2. メニューの「ウィンドウ」→「JIZURA_AE.jsx」でパネルが開き、ドッキングできます。
-3. 試すだけなら「ファイル → スクリプト → スクリプトファイルを実行」でも動きます（フローティングウィンドウになります）。
-
-### 使い方
-
-- **歌詞から**：歌詞・スタイル・サイズ・演出を決めて「コンポを生成する」を押します。
-  - タイミングは次の3つから選べます。
-    - 自動（文字数・BPM から計算）
-    - 選択レイヤーのマーカー
-    - コンポマーカー
-  - おすすめの手順：曲のレイヤーを選択し、再生しながらテンキーの `*` で各行の頭にマーカーを打ちます。「選択レイヤーのマーカーを行頭に使う」を選んで生成します。
-- **おまかせで生成**：押すたびに、スタイル・雰囲気・演出の強さ・2コマ打ち/フラッシュ/HUD・シード・配色をランダムに決め、パネルの表示にも反映して新しいコンポを作ります。結果が気に入ったら、そこから値を調整して「コンポを生成する」で作り直せます。
-- **雰囲気**（「演出」欄）：選ぶと、その雰囲気に合うレイアウト・登場・退場の手法に絞って組み立てます。どの手法に絞るかはシードで決まるため、同じシードなら同じ結果になります。
-- **アクセント・ズレ色**：「ランダム配色」でアクセント色とズレ色A/Bを選び直します。`#RRGGBB` 形式で直接入力もできます。「スタイルの色を上書き」にチェックが入っていると、生成するコンポの全シーンに適用します（明るさは背景に合わせて自動で補正します）。
-- **ブラウザ版の新しい部品について**：AE パネルが組み立てられるのは基本セットの部品（レイアウト17・登場13・保持6・退場11・装飾15）です。ブラウザ版の「AE用に書き出し」では、新しい部品はそれぞれ一番近い部品に置き換えて書き出します（文字の加工・背景・カメラ・カット間のつなぎは AE 版では未対応で、使われません）。置き換えがあった場合、パネル下のステータスに「置換あり」と出ます。
-- **追加スタイルについて**：ブラウザ版で増えたスタイル（サクラ〜金夜の12種）で作った構成も、JSON で読み込めば配色と書体の指定はそのまま使えます（書体が PC に無い場合は近い書体か「フォント」タブの指定になります）。AE パネル自体のスタイル一覧と部品は、今は基本セットのみです。追加分は今後の更新で対応予定です。
-- **サイズ**：1920×1080 / 1080×1920 / 1080×1080 / 3840×2160 / 1280×720 / 1440×1080（4:3）/ 1080×1440（3:4）、またはアクティブなコンポと同じサイズ。
-- **JSONから**：ブラウザ版の「AE用に書き出し」で作った JSON を読み込みます。ブラウザで決めた構成がそのまま AE で組み上がります。
-- **フォント**
-  - Noto Sans JP / Noto Serif JP / Dela Gothic One などが入っていれば自動で使います（自動で選ぶのは AE 2024 以降）。
-  - 入っていない場合は「フォント」タブで指定した書体を使います。既定は游ゴシック・游明朝です。
-
-### 生成されるもの
-
-- カットごとのプリコンポ（`JIZURA <曲名> cuts` フォルダ）
-  - 文字はテキストアニメーター（エクスプレッションセレクター）で動くので、文字を打ち替えても動きが保たれます。
-- 色ズレは、各カットを時間差で複製し、「色合い」エフェクトで着色したゴーストレイヤーで表現しています。
-- 最上段の `JZ FX` 調整レイヤーに以下がまとまっています。
-  - 2コマ打ち（ポスタリゼーション時間）
-  - 揺れ（トランスフォーム）
-  - スライスグリッチ（波形ワープ）
-  - ズームブラー / 反転 / グロー / ノイズ
-- `JZ Flash`・`JZ Vignette`・HUD（タイムコード・行カウンター）も生成されます。
-
-### 注意
-
-- AE 2020 以降、エクスプレッションエンジンは JavaScript（新規プロジェクトの既定）を想定しています。
-- このパネルは、AE のオブジェクトモデルを模した環境で検証済みです。全スタイル × 全レイアウト × 全登場・退場の組み合わせと、おまかせ生成・配色ランダムでエラーがないことを確認しています。ただし実機の AE ではまだ動かしていません。エフェクトの設定などで想定外のことがあった場合は、生成後にその項目を一覧で表示し、他の部分の生成は続けます。
+- **Layout (17)**: Center / Big-Small Mix / Vertical / Marquee / Tile / Scatter / Ring / Wave Path / Bleed Off Screen / Labels / Condensed / Annotation / Type / Diagonal Band / Round Window / Afterimage Stack / Capsule
+- **Enter (13)**: Assemble (breaks each glyph into strokes or components) / Slice / Type / Pop / Drop / Stretch / Wipe / Blur / Spin / Flicker / Scramble / Zoom / Cut
+- **Hold**: Jitter / Drift / Breathe / Wave / Glitch
+- **Exit (11)**: Explode / Collapse / Dissolve / Slice / Wipe / Shrink / Blur / Stretch / Scatter / Glitch / Cut
+- **Decor (15)**: Frame Marks / Coordinate Rings / Dot Ring / Arrows / Slashes / Sparks / Leader Lines / Waveform / Barcode / Grid / Stripes / Ink Blots / Rough Bars / Shapes / Big Number
+- **Finish**
+  - Time-lagged color offset (RGB split)
+  - Full-screen slice glitch / block glitch
+  - Invert / flash / zoom blur / mosaic
+  - Shake / on twos / grain / paper texture / scanlines / bloom / vignette
 
 ---
 
-## 開発・ビルド
+## Using the After Effects panel
+
+The panel is not translated in this edition, so its labels are in Japanese. The Japanese label is given in brackets where it helps you find it.
+
+### Installing
+
+1. Put `JIZURA_AE.jsx` in the following folder and restart AE.
+   - Windows: `C:\Program Files\Adobe\Adobe After Effects <version>\Support Files\Scripts\ScriptUI Panels\`
+   - Mac: `/Applications/Adobe After Effects <version>/Scripts/ScriptUI Panels/`
+2. Open the panel from the menu with "Window" → "JIZURA_AE.jsx". It can be docked.
+3. To just try it out, "File → Scripts → Run Script File" also works (it opens as a floating window).
+
+### Usage
+
+- **From lyrics** (「歌詞から」): set the lyrics, style, size and effects, then press "Generate comp" (「コンポを生成する」).
+  - Timing can come from one of three sources:
+    - Auto (calculated from character count and BPM)
+    - Markers on the selected layer
+    - Comp markers
+  - Recommended workflow: select the song layer, play it, and press `*` on the numeric keypad at the start of each line to drop markers. Choose "Use selected layer's markers as line starts" (「選択レイヤーのマーカーを行頭に使う」) and generate.
+- **Auto-generate** (「おまかせで生成」): each press randomly sets the style, mood, effect strength, on twos / flash / HUD, seed and colors, shows them in the panel, and builds a new comp. If you like the result, adjust the values from there and rebuild with "Generate comp".
+- **Mood** (「雰囲気」, in the "Effects" (「演出」) section): when chosen, the build is limited to layouts and enter / exit techniques that suit that mood. Which techniques it narrows to is decided by the seed, so the same seed gives the same result.
+- **Accent & offset colors** (「アクセント・ズレ色」): "Random colors" (「ランダム配色」) picks a new accent color and offset colors A/B. You can also type them directly as `#RRGGBB`. When "Override style colors" (「スタイルの色を上書き」) is checked, they are applied to every scene of the generated comp (brightness is corrected automatically to suit the background).
+- **About the newer parts in the browser app**: the AE panel can only build with the base-set parts (17 layouts, 13 enters, 6 holds, 11 exits, 15 decor). The browser app's "Export for AE" replaces each newer part with the closest base part (text treatments, backgrounds, camera and transitions between cuts are not supported in the AE version and are not used). When something has been replaced, the status line at the bottom of the panel shows 「置換あり」 ("replacements made").
+- **About the added styles**: structures made with the styles added in the browser app (the 12 from Sakura to Golden Night) keep their colors and typeface settings when loaded as JSON (if a typeface is not on your computer, a close typeface or the one set in the "Fonts" (「フォント」) tab is used). The AE panel's own style list and parts are still base set only. The Extras are planned for a future update.
+- **Size**: 1920×1080 / 1080×1920 / 1080×1080 / 3840×2160 / 1280×720 / 1440×1080 (4:3) / 1080×1440 (3:4), or the same size as the active comp.
+- **From JSON** (「JSONから」): loads JSON made with "Export for AE" in the browser app. The structure you set up in the browser is built as is in AE.
+- **Fonts**
+  - If Noto Sans JP / Noto Serif JP / Dela Gothic One etc. are installed, they are used automatically (automatic selection needs AE 2024 or later).
+  - Otherwise the typefaces set in the "Fonts" tab are used. The defaults are Yu Gothic and Yu Mincho.
+
+### What gets generated
+
+- A precomp per cut (in the `JIZURA <song title> cuts` folder)
+  - Text moves with text animators (Expression Selectors), so the motion survives if you retype the text.
+- The color offset is made from ghost layers: each cut is duplicated with a time lag and colored with the "Tint" effect.
+- The `JZ FX` adjustment layer at the top holds:
+  - on twos (Posterize Time)
+  - shake (Transform)
+  - slice glitch (Wave Warp)
+  - zoom blur / invert / glow / noise
+- `JZ Flash`, `JZ Vignette` and a HUD (timecode, line counter) are generated too.
+
+### Notes
+
+- From AE 2020 on, the expression engine is expected to be JavaScript (the default for new projects).
+- This panel has been tested in an environment that mimics AE's object model. Every style × every layout × every enter / exit combination, plus Auto generation and random colors, ran without errors. It has not yet been run in real AE, though. If something unexpected happens with an effect's settings etc., those items are listed after generation and the rest of the build carries on.
+
+---
+
+## Development & build
 
 ```
 python3 build.py              # src/ app/ vendor/ → index.html
-node tools/export_ae_data.js  # スタイルなどを変えたとき：ae/data.json を更新
+node tools/export_ae_data.js  # after changing styles etc.: updates ae/data.json
 python3 build_ae.py           # ae/ → JIZURA_AE.jsx
 ```
-ビルドに必要なのは Python 3 と Node.js だけです（npm パッケージは不要）。表現部品を追加するときは `docs/EXPRESSION_PACKS.md` を参照してください（テスト用ツールは `dev/`）。
+All you need to build is Python 3 and Node.js (no npm packages). To add expression parts, see `docs/EXPRESSION_PACKS.md` (test tools are in `dev/`).
 
-### 自分のリポジトリで公開する（フォークした場合など）
+### Publishing from your own repository (e.g. a fork)
 
-1. `index.html` がリポジトリ直下にある状態で push します。
-2. **Settings → Pages** で Source を **Deploy from a branch**、Branch を `main` / `/ (root)` にして保存します。
-3. 数分後に `https://<ユーザー名>.github.io/<リポジトリ名>/` で開けます。
+1. Push with `index.html` at the repository root.
+2. In **Settings → Pages**, set Source to **Deploy from a branch** and Branch to `main` / `/ (root)`, then save.
+3. A few minutes later it opens at `https://<username>.github.io/<repository>/`.
 
-## ライセンス
+## License
 
-[MIT License](LICENSE)。商用・非商用を問わず、使用・改変・再配布できます（著作権表示とライセンス文の同梱が条件です）。
-このツールで作った動画や画像の権利は、作った人（と、その歌詞・曲の権利者）に帰属します。このソフトのライセンスは出力物には及びません。
+[MIT License](LICENSE). You may use, modify and redistribute it, commercially or not (on condition that the copyright notice and license text are included).
+The rights to videos and images made with this tool belong to the person who made them (and to the owners of the lyrics and songs). This software's license does not extend to the output.
 
-同梱しているサードパーティ製ソフトウェアについては [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) を参照してください。
+For bundled third-party software, see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

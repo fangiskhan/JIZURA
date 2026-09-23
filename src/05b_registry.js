@@ -21,25 +21,25 @@
 (() => {
 'use strict';
 
-J.TREAT = { none: { name: 'なし', apply() {} } };
+J.TREAT = { none: { name: 'None', apply() {} } };
 J.TREAT_ORDER = ['none'];
-J.BG = { none: { name: '無地', draw() {} } };
+J.BG = { none: { name: 'Plain', draw() {} } };
 J.BG_ORDER = ['none'];
 J.CAMERA = {
-  push: { name: 'ゆっくり寄る', tags: ['calm', 'editorial', 'emotional', 'graphic', 'pop', 'glitch'], w: 5,
+  push: { name: 'Slow Push-in', tags: ['calm', 'editorial', 'emotional', 'graphic', 'pop', 'glitch'], w: 5,
     get: (env) => ({ s: 1 + 0.03 * (env.fx.motion ?? 0.7) * J.clamp(env.lt / Math.max(0.3, env.cut.dur)) }) },
 };
 J.CAMERA_ORDER = ['push'];
 // post / transition effects. Entries without draw() are handled by the renderer's built-in branch.
 J.FXE = {
-  slice:  { name: 'スライスグリッチ', builtin: true },
-  block:  { name: 'ブロックグリッチ', builtin: true },
-  invert: { name: '反転', builtin: true },
-  flash:  { name: 'フラッシュ', builtin: true },
-  zoom:   { name: 'ズームブラー', builtin: true },
-  mosaic: { name: 'モザイク', builtin: true },
-  shake:  { name: '揺れ', builtin: true },
-  chroma: { name: '色ズレの跳ね', builtin: true },
+  slice:  { name: 'Slice Glitch', builtin: true },
+  block:  { name: 'Block Glitch', builtin: true },
+  invert: { name: 'Invert', builtin: true },
+  flash:  { name: 'Flash', builtin: true },
+  zoom:   { name: 'Zoom Blur', builtin: true },
+  mosaic: { name: 'Mosaic', builtin: true },
+  shake:  { name: 'Shake', builtin: true },
+  chroma: { name: 'Chroma Spike', builtin: true },
 };
 J.FXE_ORDER = ['chroma', 'shake', 'slice', 'block', 'invert', 'flash', 'zoom', 'mosaic'];
 // cut-to-cut transitions: draw(ctx, A, B, p, info) composites the previous cut (A) and this cut (B) in device pixels
@@ -68,6 +68,6 @@ J.register = (group, key, def, pack) => {
 };
 J.registerAll = (group, defs, pack) => { for (const k of Object.keys(defs)) J.register(group, k, defs[k], pack); };
 
-/* items whose tags include a mood key (used by おまかせ) */
+/* items whose tags include a mood key (used by Auto / omakase) */
 J.taggedWith = (group, mood) => J.order(group).filter(k => { const d = J.registry(group)[k]; return d && d.tags && d.tags.includes(mood); });
 })();

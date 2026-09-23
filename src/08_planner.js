@@ -4,18 +4,18 @@
 (() => {
 'use strict';
 
-J.SAMPLE_LYRICS = `夜明けの色を/覚えてる
-ほどけた声が遠くで鳴った
-ねえ、まだ間に合うかな
-*透明*なままじゃ終われない!`;
+J.SAMPLE_LYRICS = `Hold the morning/in your hands
+Somewhere far a quiet voice rang out
+Hey, is there still time
+I won't end up *invisible*!`;
 
 J.defaultProject = () => ({
   version: 1,
   title: '', artist: '',
   lyrics: J.SAMPLE_LYRICS,
   style: 'noir', mood: null,
-  extra: false,                   // random picks may use the parts added after the first version (追加分)
-  wa: true,                       // …and the 和風 motifs (提灯・障子・家紋…) — applied after 'extra'
+  extra: false,                   // random picks may use the parts added after the first version (extras, tsuikabun)
+  wa: true,                       // …and the Japanese-style (wafu) motifs (lanterns, shoji screens, family crests…) — applied after 'extra'
   seed: 20260922,
   aspect: '16:9', res: 1080, fps: 24,
   fx: { motion: 0.7, glitch: 0.55, chroma: 0.7, decor: 0.5, density: 0.55, texture: 0.6, flash: true, onTwos: true, koma: 12, hud: 'auto', bgSwitch: 0.35 },
@@ -172,7 +172,7 @@ J.plan = (project, audio) => {
   const tm = J.computeTiming(project, parsed, audio);
   const [W, H] = J.designSize(project.aspect);
   // enabled map: anything not explicitly switched off is on (new pack entries appear enabled in old projects);
-  // then the 追加分 / 和風 switches decide what random picks may use (a per-line override still works)
+  // then the Extras / Japanese-style switches decide what random picks may use (a per-line override still works)
   const en = {};
   for (const g of J.GROUP_KEYS) { en[g] = {}; const src = (project.enabled || {})[g] || {}; for (const k of J.order(g)) en[g][k] = src[k] !== false && (!J.randomOk || J.randomOk(project, g, k)); }
   const plan = {

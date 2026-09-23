@@ -1,6 +1,6 @@
 # JIZURA expression packs — contributor guide
 
-JIZURA is a browser lyric-video (文字PV) engine: lyrics → timed "cuts", each cut = one **layout** (composition) +
+JIZURA is a browser lyric-video (kinetic typography) engine: lyrics → timed "cuts", each cut = one **layout** (composition) +
 **enter** (entrance) + **hold** (idle motion) + **exit** + 0..n **decor** graphics (+ treatment / background / camera / fx,
 which are handled by other packs). Everything renders into a Canvas2D in *design space* and is deterministic from a seed.
 
@@ -18,11 +18,11 @@ Existing implementations to read first (they show the house style and all the id
 'use strict';
 const E = J.E;
 const P = '<pack>';            // pack name for J.register
-J.register('layout', 'myKey', { name: '日本語名', tags: ['pop', 'graphic'], w: 1, fits: n => n <= 12, plan(rng, cut, st) { … }, render(env) { … } }, P);
+J.register('layout', 'myKey', { name: 'Display Name', tags: ['pop', 'graphic'], w: 1, fits: n => n <= 12, plan(rng, cut, st) { … }, render(env) { … } }, P);
 })();
 ```
 `J.register(group, key, def, pack)` adds the entry to the registry and to the order array. Keys must be unique camelCase and
-must not collide with existing keys (check `J.order(group)`). `name` (Japanese, short, 2–7 chars) is shown in the UI.
+must not collide with existing keys (check `J.order(group)`). `name` (English, short: 1–3 words, Title Case, no trailing period) is shown in the UI.
 `tags` = moods it suits, any of: `glitch calm pop graphic editorial emotional`. `w` = base pick weight (1 normal; 0.4–0.7 for
 gimmicky / very specific looks; 1.2–1.5 for strong general-purpose ones).
 
@@ -142,13 +142,13 @@ frame when scratch:true), sc, st, step, t, scale, allowFilter, opt, tmp(w,h), tm
 Leave ctx state clean. No getImageData on full frames. `ae` = the closest After Effects event type
 (`chroma shake slice block invert flash zoom mosaic`) or omit.
 
-**trans** (カット間のつなぎ) `{ name, tags, w, dur (seconds, default 0.35), plan?(rng, st) → params, draw(ctx, A, B, p, info) }` — how a
+**trans** (transitions between cuts) `{ name, tags, w, dur (seconds, default 0.35), plan?(rng, st) → params, draw(ctx, A, B, p, info) }` — how a
 cut takes over from the previous one. `A` = canvas with the previous cut's resting frame, `B` = canvas with this cut's frame (both full
 device-pixel size), `p` 0→1 (linear; ease it yourself). Draw the complete composite into `ctx` (identity transform, same size) — at p=0
 it must look exactly like A, at p=1 exactly like B. `info = {cw, ch, sc, scPrev, st, P, step, t, scale, allowFilter, seed, tmp(w,h)}`.
 The planner turns the previous cut's exit and this cut's entrance into plain cuts when a transition is used.
 
-**style** (配色セット) — added directly to `J.STYLES` + `J.STYLE_ORDER` (see src/04_styles.js for the full schema): `{ name, desc,
+**style** (colour / typeface set) — added directly to `J.STYLES` + `J.STYLE_ORDER` (see src/04_styles.js for the full schema): `{ name, desc,
 moods: [mood keys], schemes: [2–4 × {bg, fg, sub, accent, accent2, ink, dim, ghostA, ghostB, grad?, paper?}], fonts: {display, serif,
 body, mono}, texture: {grain, paper, scan}, ghost, bias: {layout, enter, exit}, decor: {decorKey: weight}, hud, glow?, glitchBoost?, useGrad? }`.
 
@@ -168,10 +168,10 @@ round pop dot brush mono sansui` + newer faces `reggae` (Reggae One, rough heavy
 elegant heavy mincho). Faces are fetched lazily only when a plan uses them, so prefer the style's role fonts (`st.fonts.*`).
 (When Google Fonts cannot be reached, sheets render with system fallback fonts — judge layout and motion, not the typeface.)
 
-### 追加分 / 和風 (random-pick sets)
-`src/11q_sets.js` decides what random picks may use. Entries from packs not listed in `J.BASE_PACKS` count as 追加分 (extra) and
-are only picked at random when the project's 「追加分の演出も使う」 switch is on. Entries built around a traditional Japanese
-object, pattern or motif (提灯, 障子, 扇, 家紋, 青海波 …) must be listed in `J.WA` (or carry `wa: true`) so the 「和風の演出も使う」
+### Extras / Japanese-style (random-pick sets)
+`src/11q_sets.js` decides what random picks may use. Entries from packs not listed in `J.BASE_PACKS` count as Extras and
+are only picked at random when the project's "Include Extras" switch is on. Entries built around a traditional Japanese
+object, pattern or motif (paper lantern, shoji screen, folding fan, family crest, seigaiha waves …) must be listed in `J.WA` (or carry `wa: true`) so the "Include Japanese-style"
 switch can leave them out. New styles are extra unless listed in `J.BASE_STYLES`; new fonts belong in `J.EXTRA_FONTS`.
 
 ### Avoid near-duplicates
